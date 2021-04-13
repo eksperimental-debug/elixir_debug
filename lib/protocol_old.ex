@@ -1,19 +1,19 @@
 defprotocol ProtocolOld do
-  @spec to_empty(any(), list()) :: tuple()
-  def to_empty(term, options \\ [])
+  @spec with_specs(any(), keyword()) :: tuple()
+  def with_specs(term, options \\ [])
 
-  # def to_empty(x, beta, gamma, epsilon)
+  def without_specs(term, options \\ [])
 
   # this will give a CompileError in the old protocol version
-  # @optional_callbacks to_empty: 1
+  # @optional_callbacks with_specs: 1, without_specs: 1
 end
 
 defimpl ProtocolOld, for: Map do
-  def to_empty(x, options) do
+  def with_specs(x, options) do
     {x, options}
   end
 
-  def to_empty(x, beta, gamma, epsilon) do
-    {x, beta, gamma, epsilon}
+  def without_specs(x, options) do
+    {x, options}
   end
 end

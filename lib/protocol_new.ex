@@ -2,21 +2,22 @@ import Kernel, except: [defprotocol: 2]
 import ProtocolPatched, only: [defprotocol: 2]
 
 defprotocol ProtocolNew do
-  # @spec to_empty(any(), list()) :: tuple()
-  def to_empty(term, options \\ [])
+  # @callback default_port(uri_info :: URI.t()) :: integer
 
-  # def to_empty(x, beta, gamma, epsilon)
+  @spec with_specs(any(), keyword()) :: tuple()
+  def with_specs(term, options \\ [])
 
-  # @optional_callbacks extract: 1, to_empty: 1
-  @optional_callbacks to_empty: 1
+  def without_specs(term, options \\ [])
+
+  @optional_callbacks with_specs: 1, without_specs: 1
 end
 
 defimpl ProtocolNew, for: Map do
-  def to_empty(x, options) do
+  def with_specs(x, options) do
     {x, options}
   end
 
-  def to_empty(x, beta, gamma, epsilon) do
-    {x, beta, gamma, epsilon}
+  def without_specs(x, options) do
+    {x, options}
   end
 end

@@ -35,7 +35,7 @@ defmodule ProtocolPatched do
           [{name, current_arity} | acc]
         end,
         [],
-        :lists.seq(arity, min_arity)
+        :lists.seq(min_arity, arity) |> :lists.reverse()
       )
 
     callbacks_ast =
@@ -57,9 +57,9 @@ defmodule ProtocolPatched do
       name = unquote(name)
       arity = unquote(arity)
 
-      @functions ++ unquote(Macro.escape(additional_functions))
+      @functions @functions ++ unquote(Macro.escape(additional_functions))
 
-      # Generate a fake definition with the user
+      # Generate a function head with the user
       # signature that will be used by docs
       Kernel.def(unquote(name)(unquote_splicing(args)))
 
@@ -473,7 +473,7 @@ defmodule ProtocolPatched do
 
   @doc false
   def __protocol__(name, do: block) do
-    quote do
+    quote location: :keep do
       defmodule unquote(name) do
         # We don't allow function definition inside protocols
         import Kernel,
